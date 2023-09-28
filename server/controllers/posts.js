@@ -121,3 +121,14 @@ export const addComment = async (req, res) => {
         res.status(404).json({ message: 'could not add comment' });
     }
 }
+
+// DELETE
+export const deletePost = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedPost = await Post.findByIdAndRemove(id);
+        res.status(200).json(deletedPost);
+    } catch (err) {
+        res.status(404).json({ message: `${err}, cannot delete` });
+    }
+}

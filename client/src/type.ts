@@ -66,3 +66,9 @@ export interface Options {
     options: User[];
     loading: boolean;
 }
+
+export interface IModal {
+    isOpen: boolean;
+    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+    id: string;
+}

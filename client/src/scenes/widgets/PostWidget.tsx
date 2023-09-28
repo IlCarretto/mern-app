@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined, ReplyOutlined } from '@mui/icons-material';
+import { ChatBubbleOutlineOutlined, FavoriteBorderOutlined, FavoriteOutlined, ShareOutlined, ReplyOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
 import { Box, Divider, IconButton, Typography, useTheme, InputBase, Button} from '@mui/material';
 import FlexBetween from 'components/FlexBetween';
 import Friend from "components/Friend";
@@ -9,6 +9,7 @@ import { setPost } from 'state';
 import { RootState } from 'index';
 import SharedModal from './SharedModal';
 import SharedPostWidget from './SharedPostWidget';
+import DeleteModal from './DeleteModal';
 const PostWidget = ({
   postId, postUserId, name, description, location, picturePath, userPicturePath, likes, comments,
    isShared = { [""] : false}, sharedNum, origin
@@ -18,7 +19,8 @@ const PostWidget = ({
 
   const dispatch = useDispatch();
   const token = useSelector((state: RootState) => state.token);
-  const loggedInUserId = useSelector((state: RootState) => state.user?._id);
+  const user = useSelector((state: RootState) => state.user);
+  const loggedInUserId = user?._id;
   const isLiked = Boolean(likes[(loggedInUserId!)]);
   const likesCount = Object.keys(likes).length;
   const { palette } = useTheme();
@@ -60,12 +62,19 @@ const PostWidget = ({
     }
   };
 
-  // MODAL
+  // MODAL SHARE
   const [isOpen, setIsOpen] = useState(false);
-  
+  // MODAL DELETE POST
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
   return (
     <>
-      <WidgetWrapper m="2rem 0">
+      <WidgetWrapper m="2rem 0" position='relative'>
+        {origin === 'posts' && loggedInUserId === postUserId &&
+        <IconButton onClick={() => setIsDeleteModalOpen(true)} style={{position: 'absolute', top: '15px', right: '15px'}}>
+          <DeleteOutlineOutlined/>
+        </IconButton>
+        }
         <Friend friendId={postUserId} name={name} subtitle={location} userPicturePath={userPicturePath}/>
         <Typography color={main} sx={{mt: "1rem"}}>
           {description}
@@ -163,7 +172,8 @@ const PostWidget = ({
           </>
         )}
       </WidgetWrapper>
-      {isOpen && <SharedModal postId={postId} isOpen={isOpen} setIsOpen={setIsOpen}/>}
+      {isOpen && <SharedModal id={postId} isOpen={isOpen} setIsOpen={setIsOpen}/>}
+      {isDeleteModalOpen && <DeleteModal id={postId} isOpen={isDeleteModalOpen} setIsOpen={setIsDeleteModalOpen}/>}
     </>
   )
 }

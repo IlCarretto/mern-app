@@ -3,12 +3,7 @@ import { Box, Modal } from '@mui/material';
 import MyPostWidget from './MyPostWidget';
 import { useSelector } from 'react-redux';
 import { RootState } from 'index';
-
-interface IProps {
-    isOpen: boolean;
-    setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    postId: string;
-}
+import { IModal } from 'type';
 
 const style = {
     position: 'absolute' as 'absolute',
@@ -21,14 +16,14 @@ const style = {
     borderRadius: 2
 };
 
-const SharedModal = ({isOpen, setIsOpen, postId}: IProps) => {
+const SharedModal = ({isOpen, setIsOpen, id}: IModal) => {
 
     const user = useSelector((state: RootState) => state.user);
 
   return (
     <Modal open={isOpen} onClose={() => setIsOpen(false)}>
         <Box sx={style}>
-            <MyPostWidget picturePath={user?.picturePath ?? ''} isShared={{[postId]: true}}/>
+            <MyPostWidget picturePath={user?.picturePath ?? ''} isShared={{[id]: true}}/>
         </Box>
     </Modal>
   )
